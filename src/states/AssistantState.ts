@@ -16,9 +16,9 @@ export const getAssistantColor = (status: AssistantStatus) => {
       case AssistantStatus.LISTENING:
         return "lime"
       case AssistantStatus.PROCESSING:
-        return "lightblue"
+        return "orange"
       case AssistantStatus.RESPONDING:
-        return "pink"
+        return "lightblue"
     }
   }
 
@@ -34,7 +34,7 @@ export const useAssistantStore = create<AssistantState>((set) => ({
     {
       role: "system",
       content:
-        "You are a personal finance assistant called Daniel." +
+        "You are a personal finance assistant called Paul." +
         // "You are programmed for virtual and augmented reality environments. " +
         "Keep your answers shorter but informative. " +
         "Be funny while explaining and talking. "

@@ -1,10 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Assitant from "./components/Assistant";
-import { useState } from "react";
 import TextInput from "./components/TextInput";
 import { inputCanvasProps } from "@coconut-xr/input";
-import { ChatCompletionRequestMessage } from "openai";
 
 function App() {
   // React Audio Recorder

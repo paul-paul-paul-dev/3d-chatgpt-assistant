@@ -20,7 +20,7 @@ export default function Assistant(
   // TTS Setup
   const tts = new SpeechSynthesisUtterance();
   var voices = window.speechSynthesis.getVoices();
-  tts.voice = voices[14];
+  tts.voice = voices[146];
   /* Good Voices : 
   14: Daniel en-US
   140: Zarvox en-US pitch 1.4 rate 0.9
@@ -30,16 +30,17 @@ export default function Assistant(
 
   */
   tts.volume = 1;
-  tts.rate = 1;
-  tts.pitch = 1;
+  tts.rate = 1.1;
+  tts.pitch = 0.9;
   tts.lang = "en-GB";
 
-  const [prompts, assistantStatus, setAssistantStatus] =
-    useAssistantStore((assistantStore) => [
+  const [prompts, assistantStatus, setAssistantStatus] = useAssistantStore(
+    (assistantStore) => [
       assistantStore.prompts,
       assistantStore.status,
       assistantStore.changeStatus,
-    ]);
+    ]
+  );
 
   tts.onend = (event) => {
     setAssistantStatus(AssistantStatus.IDLE);
@@ -65,12 +66,10 @@ export default function Assistant(
   };
 
   tts.onboundary = (event) => {
-    ref.current.scale.x = 0.8
-    ref.current.scale.y = 0.8
-    ref.current.scale.z = 0.8
-  }
-
-
+    ref.current.scale.x = 0.8;
+    ref.current.scale.y = 0.8;
+    ref.current.scale.z = 0.8;
+  };
 
   useEffect(() => {
     if (assistantStatus === AssistantStatus.PREPARINGTOSPEEK) {
@@ -82,42 +81,49 @@ export default function Assistant(
     }
   });
 
-
   // MODEL STUFF 3D and Animation
   const colorMap = useLoader(TextureLoader, "eyes.png");
 
-  const [goingUp, setGoingUp] = useState(true)
+  const [goingUp, setGoingUp] = useState(true);
 
   useFrame((state, delta) => {
-
-    if (assistantStatus === AssistantStatus.PROCESSING || assistantStatus === AssistantStatus.PREPARINGTOSPEEK ){
-      ref.current.rotation.y += delta
+    // rotate
+    if (
+      assistantStatus === AssistantStatus.PROCESSING ||
+      assistantStatus === AssistantStatus.PREPARINGTOSPEEK
+    ) {
+      ref.current.rotation.y += delta;
     }
 
-    
-    
-    if (assistantStatus === AssistantStatus.IDLE || assistantStatus === AssistantStatus.LISTENING){
+    // gu up and down.
+    if (
+      assistantStatus === AssistantStatus.IDLE ||
+      assistantStatus === AssistantStatus.LISTENING ||
+      assistantStatus === AssistantStatus.PROCESSING ||
+      assistantStatus === AssistantStatus.PREPARINGTOSPEEK
+    ) {
       if (goingUp) {
         ref.current.position.y += delta / 3;
       } else {
         ref.current.position.y -= delta / 3;
       }
-      if ( Math.round(ref.current.position.y) === 2) {
-        setGoingUp(false)
-      }else if ( Math.round(ref.current.position.y) === 0) {
-        setGoingUp(true)
-      } 
-    }
-
-    if (assistantStatus === AssistantStatus.RESPONDING){
-      ref.current.rotation.y = 0
-      if (ref.current.scale.y > 0.7 ){
-        ref.current.scale.x -= delta/5
-        ref.current.scale.y -= delta/5
-        ref.current.scale.z -= delta/5
+      if (Math.round(ref.current.position.y) === 2) {
+        setGoingUp(false);
+      } else if (Math.round(ref.current.position.y) === 0) {
+        setGoingUp(true);
       }
     }
-    
+
+    if (assistantStatus === AssistantStatus.RESPONDING) {
+      // no rotation while talking
+      ref.current.rotation.y = 0;
+      // visual response while talking
+      if (ref.current.scale.y > 0.7) {
+        ref.current.scale.x -= delta / 5;
+        ref.current.scale.y -= delta / 5;
+        ref.current.scale.z -= delta / 5;
+      }
+    }
   });
 
   const handleClick = () => {
@@ -131,7 +137,6 @@ export default function Assistant(
       setAssistantStatus(AssistantStatus.IDLE); // or processing
     }
   };
-
 
   return (
     <mesh

@@ -15,7 +15,7 @@ delete configuration.baseOptions.headers["User-Agent"];
 const openai = new OpenAIApi(configuration);
 
 function TextInput() {
-  const [inputText, setinputText] = useState("Give me 3 essential investing tips for beginners!");
+  const [inputText, setinputText] = useState("Summarize the plot of the Film \"The Big Short\"");
   const [isPressed, setPressed] = useState(false);
 
   const [prompts, setAssistantStatus, addToPrompts] =

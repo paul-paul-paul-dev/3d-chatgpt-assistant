@@ -38,9 +38,6 @@ function TextInput() {
           model: "gpt-3.5-turbo",
           messages: prompts,
           temperature: 0,
-          max_tokens: 10,
-          n: 1,
-          stream: false,
         },
         {
           timeout: 10000,
@@ -63,19 +60,17 @@ function TextInput() {
   const handleDown = (e: any) => {
     setPressed(true);
     setAssistantStatus(AssistantStatus.PROCESSING)
-
     addToPrompts({ role: "user", content: inputText })
-
-    sendRequest()
-      .then((response) => {
-        addToPrompts(response!)
-        console.log(response?.content);
-      })
-      .then(() => setAssistantStatus(AssistantStatus.IDLE));
   };
 
   const handleUp = (e: any) => {
     setPressed(false);
+    sendRequest()
+    .then((response) => {
+      addToPrompts(response!)
+      console.log(response?.content);
+    })
+    .then(() => setAssistantStatus(AssistantStatus.RESPONDING));
   };
 
   return (

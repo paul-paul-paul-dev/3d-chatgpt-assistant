@@ -8,6 +8,19 @@ export enum AssistantStatus {
   RESPONDING,
 }
 
+export const getAssistantColor = (status: AssistantStatus) => {
+    switch (status){
+      case AssistantStatus.IDLE:
+        return "orange"
+      case AssistantStatus.LISTENING:
+        return "lime"
+      case AssistantStatus.PROCESSING:
+        return "lightblue"
+      case AssistantStatus.RESPONDING:
+        return "pink"
+    }
+  }
+
 interface AssistantState {
   prompts: ChatCompletionRequestMessage[];
   status: AssistantStatus;
@@ -20,7 +33,10 @@ export const useAssistantStore = create<AssistantState>((set) => ({
     {
       role: "system",
       content:
-        "You are a personal finance assistant called Paul. You are programmed for virtual and augmented reality environments. Answer in sophisticated business English and add financial facts to your answers from time to time.",
+        "You are a personal finance assistant called Paul. You are programmed for virtual and augmented reality environments." +
+        "Keep your answers very short but informative", 
+
+        // Answer in sophisticated business English and add financial facts to your answers from time to time.
     },
   ],
   status: AssistantStatus.IDLE,

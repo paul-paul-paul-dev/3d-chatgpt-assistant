@@ -3,23 +3,75 @@ import { loadYoga } from "@coconut-xr/flex";
 import { useState } from "react";
 import { Input } from "@coconut-xr/input";
 import Card from "./Card";
+import { Configuration, OpenAIApi } from "openai";
+import { AssistantStatus, useAssistantStore } from "../states/AssistantState";
+
+const configuration = new Configuration({
+  apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY_WHISPER,
+});
+
+delete configuration.baseOptions.headers["User-Agent"];
+
+const openai = new OpenAIApi(configuration);
 
 function TextInput() {
-  const [text1, setText1] = useState("Input Field");
+  const [inputText, setinputText] = useState("Hi, who are you?");
   const [isPressed, setPressed] = useState(false);
 
+  const [prompts, setAssistantStatus, addToPrompts] =
+    useAssistantStore((assistantStore) => [
+      assistantStore.prompts,
+      assistantStore.changeStatus,
+      assistantStore.addToPrompts,
+    ]);
+
   const handleChange = (e: string) => {
-    console.log(e);
-    setText1(e);
+    setinputText(e);
   };
 
-  const sendRequest = () => {
-    console.log("Send Request");
+  const sendRequest = async () => {
+    console.log("Send Request:");
+    console.log(prompts);
+    try {
+      const completion = await openai.createChatCompletion(
+        {
+          model: "gpt-3.5-turbo",
+          messages: prompts,
+          temperature: 0,
+          max_tokens: 10,
+          n: 1,
+          stream: false,
+        },
+        {
+          timeout: 10000,
+        }
+      );
+
+      if (completion.data.choices[0].message) {
+        return completion.data.choices[0].message;
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response.status)
+        console.log(error.response.data)
+      } else {
+        console.log(error.message)
+      }
+    }
   };
 
   const handleDown = (e: any) => {
     setPressed(true);
-    sendRequest();
+    setAssistantStatus(AssistantStatus.PROCESSING)
+
+    addToPrompts({ role: "user", content: inputText })
+
+    sendRequest()
+      .then((response) => {
+        addToPrompts(response!)
+        console.log(response?.content);
+      })
+      .then(() => setAssistantStatus(AssistantStatus.IDLE));
   };
 
   const handleUp = (e: any) => {
@@ -39,7 +91,7 @@ function TextInput() {
     >
       <Input
         flexGrow={3}
-        value={text1}
+        value={inputText}
         onChange={handleChange}
         maxWidth={1.2}
         overflow="hidden"
@@ -57,7 +109,6 @@ function TextInput() {
           isPressed={isPressed}
           onPointerDown={handleDown}
           onPointerUp={handleUp}
-          
         >
           <Text fontSize={0.1} color={"black"}>
             Send

@@ -1,30 +1,15 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import Recorder from "./components/Recorder";
 import Assitant from "./components/Assistant";
-import { AudioRecorder } from "react-audio-voice-recorder";
-import { useEffect, useState } from "react";
-import { Configuration, OpenAIApi } from "openai";
+import { useState } from "react";
 import TextInput from "./components/TextInput";
 import { inputCanvasProps } from "@coconut-xr/input";
-
-class CustomFormData extends FormData {
-  getHeaders() {
-      return {}
-  }
-}
-
-const configuration = new Configuration({
-  apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY_WHISPER,
-  formDataCtor: CustomFormData
-});
-
-const openai = new OpenAIApi(configuration);
-
+import { ChatCompletionRequestMessage } from "openai";
+import { AssistantStatus } from "./states/AssistantState";
 
 function App() {
-// React Audio Recorder
-/*
+  // React Audio Recorder
+  /*
   const {
     startRecording,
     stopRecording,
@@ -40,15 +25,19 @@ function App() {
   /* const [isRecorderListening, setIsRecorderListening] = useState(false); */
   // Whisper Return Text
   // const [convertedText, setConvertedText] = useState<string>("");
-  // Whisper loading
-  const [loading, setLoading] = useState(false);
   // whisper Input data
   // const [formData, setFormData] = useState<FormData | null>(null);
 
+  const [prompts, setPrompts] = useState<ChatCompletionRequestMessage[]>([
+    {
+      role: "system",
+      content:
+        "You are a personal finance assistant called Paul. You are programmed for virtual and augmented reality environments. Answer in sophisticated business English and add financial facts to your answers from time to time.",
+    },
+  ]);
 
-
-// Create display:none audio to autoplay the recorded result
-/*
+  // Create display:none audio to autoplay the recorded result
+  /*
   const createAudio = (blob: Blob | undefined):  void => {
     if (blob) {
       console.log("Blob_Present");
@@ -66,12 +55,12 @@ function App() {
   };
 */
 
-// create Whisper Transcription with blob
-// This is not working because the API doesn't suppurt blob files to be passed to it
-/*
+  // create Whisper Transcription with blob
+  // This is not working because the API doesn't suppurt blob files to be passed to it
+  /*
 GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com/openai/openai-node/pull/78
 */
-/*
+  /*
   const filePath = './audio.m4a';
   // ok
   const readStream = fs.createReadStream(filePath);
@@ -87,7 +76,7 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
     'whisper-1',
   );
 */
-/* 
+  /* 
   const handleAudio = async (blob: Blob | undefined) => {
     if (blob) {
       setLoading(true);
@@ -101,8 +90,8 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
   };
 */
 
-// ==== UseEffect for Recording Audio ====
-/*
+  // ==== UseEffect for Recording Audio ====
+  /*
   useEffect(() => {
     if (isRecording && !isRecorderListening) {
       stopRecording();
@@ -121,7 +110,7 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
     .then((data) => console.log(data))
     .catch(console.log)
   }, [recordingBlob]);
-*/ 
+*/
 
   return (
     <>
@@ -135,8 +124,8 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
           clicked={isRecorderListening}
         /> */}
         <TextInput />
-        <Assitant position={[1.2, 0, 0]} isLoading={loading} />
-        <OrbitControls enableRotate={false}/>
+        <Assitant position={[1.2, 0, 0]} />
+        <OrbitControls enableRotate={false} />
       </Canvas>
       {/* <AudioRecorder /> */}
     </>

@@ -5,6 +5,7 @@ export enum AssistantStatus {
   IDLE,
   LISTENING,
   PROCESSING,
+  PREPARINGTOSPEEK,
   RESPONDING,
 }
 
@@ -33,8 +34,10 @@ export const useAssistantStore = create<AssistantState>((set) => ({
     {
       role: "system",
       content:
-        "You are a personal finance assistant called Paul. You are programmed for virtual and augmented reality environments." +
-        "Keep your answers very short but informative", 
+        "You are a personal finance assistant called Paul." +
+        "You are programmed for virtual and augmented reality environments. " +
+        "Keep your answers short but informative. " +
+        "Be funny and joking while talking. "
 
         // Answer in sophisticated business English and add financial facts to your answers from time to time.
     },

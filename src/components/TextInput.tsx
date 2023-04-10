@@ -40,7 +40,7 @@ function TextInput() {
           temperature: 0,
         },
         {
-          timeout: 10000,
+          timeout: 30000,
         }
       );
 
@@ -68,9 +68,8 @@ function TextInput() {
     sendRequest()
     .then((response) => {
       addToPrompts(response!)
-      console.log(response?.content);
     })
-    .then(() => setAssistantStatus(AssistantStatus.RESPONDING));
+    .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEEK));
   };
 
   return (

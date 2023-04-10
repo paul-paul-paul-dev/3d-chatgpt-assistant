@@ -8,7 +8,6 @@ import {
 } from "../states/AssistantState";
 
 type MyAssistantProps = {};
-
 export default function Assistant(
   props: JSX.IntrinsicElements["mesh"] & MyAssistantProps
 ) {
@@ -18,7 +17,20 @@ export default function Assistant(
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
-  const textToSpeech = new SpeechSynthesisUtterance();
+  const tts = new SpeechSynthesisUtterance();
+  var voices = window.speechSynthesis.getVoices();
+  tts.voice = voices[146]; 
+
+  /* Good Voices : 
+  144: Google US
+  145: Google UK English Female
+  146: Google UK English Male
+  */
+
+  tts.volume = 1;
+  tts.rate = 1.1;
+  tts.pitch = 1;
+  tts.lang = 'en-US';
 
   const [prompts, assistantStatus, setAssistantStatus, addToPrompts] =
     useAssistantStore((assistantStore) => [
@@ -44,14 +56,23 @@ export default function Assistant(
         assistantStatus === AssistantStatus.LISTENING ? delta * 2 : delta)
   );
 
+  tts.addEventListener('end', (event) => {
+    setAssistantStatus(AssistantStatus.IDLE)
+  });
+
+  const speekMessage = (txt: string) => {
+    tts.text = txt;
+    console.log("Speaking: " + txt)
+    window.speechSynthesis.speak(tts);  
+  }
+
   useEffect(() => {
-    if (assistantStatus === AssistantStatus.RESPONDING) {
+    if (assistantStatus === AssistantStatus.PREPARINGTOSPEEK) {
+      
       // query for google text-to-speech
       if (prompts.at(-1)) {
-        textToSpeech.text = prompts.at(-1)!.content;
-        console.log("Speeking")
-        window.speechSynthesis.speak(textToSpeech);
-        setAssistantStatus(AssistantStatus.IDLE)
+        setAssistantStatus(AssistantStatus.RESPONDING)
+        speekMessage(prompts.at(-1)!.content)
       }
     }
   });

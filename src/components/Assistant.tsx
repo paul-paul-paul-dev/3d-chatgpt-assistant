@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
-import { Mesh } from "three";
+import { useFrame, useLoader } from "@react-three/fiber";
+import { Mesh, TextureLoader } from "three";
 import {
   AssistantStatus,
   getAssistantColor,
@@ -17,31 +17,114 @@ export default function Assistant(
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
+  // TTS Setup
   const tts = new SpeechSynthesisUtterance();
   var voices = window.speechSynthesis.getVoices();
-  tts.voice = voices[146]; 
-
+  tts.voice = voices[14];
   /* Good Voices : 
-  144: Google US
-  145: Google UK English Female
-  146: Google UK English Male
+  14: Daniel en-US
+  140: Zarvox en-US pitch 1.4 rate 0.9
+  144: Google US en-US rate 0.95
+  145: Google UK English Female en-GB rate 1.1 pitch 0.9
+  146: Google UK English Male en-GB rate 1.1 pitch 0.9
+
   */
-
   tts.volume = 1;
-  tts.rate = 1.1;
+  tts.rate = 1;
   tts.pitch = 1;
-  tts.lang = 'en-US';
+  tts.lang = "en-GB";
 
-  const [prompts, assistantStatus, setAssistantStatus, addToPrompts] =
+  const [prompts, assistantStatus, setAssistantStatus] =
     useAssistantStore((assistantStore) => [
       assistantStore.prompts,
       assistantStore.status,
       assistantStore.changeStatus,
-      assistantStore.addToPrompts,
     ]);
+
+  tts.onend = (event) => {
+    setAssistantStatus(AssistantStatus.IDLE);
+    console.log(`${event.name} end.`);
+  };
+
+  // because of SpeekSynthesisBug
+  let r = setInterval(() => {
+    if (!speechSynthesis.speaking) {
+      clearInterval(r);
+    } else {
+      speechSynthesis.pause();
+      speechSynthesis.resume();
+    }
+  }, 14000);
+
+  // Speek the message with speechSynthesis
+  const speekMessage = (txt: string) => {
+    tts.text = txt;
+    console.log("Speaking: ");
+    console.log(txt);
+    window.speechSynthesis.speak(tts);
+  };
+
+  tts.onboundary = (event) => {
+    ref.current.scale.x = 0.8
+    ref.current.scale.y = 0.8
+    ref.current.scale.z = 0.8
+  }
+
+
+
+  useEffect(() => {
+    if (assistantStatus === AssistantStatus.PREPARINGTOSPEEK) {
+      // query for google text-to-speech
+      if (prompts.at(-1)) {
+        setAssistantStatus(AssistantStatus.RESPONDING);
+        speekMessage(prompts.at(-1)!.content);
+      }
+    }
+  });
+
+
+  // MODEL STUFF 3D and Animation
+  const colorMap = useLoader(TextureLoader, "eyes.png");
+
+  const [goingUp, setGoingUp] = useState(true)
+
+  useFrame((state, delta) => {
+
+    if (assistantStatus === AssistantStatus.PROCESSING || assistantStatus === AssistantStatus.PREPARINGTOSPEEK ){
+      ref.current.rotation.y += delta
+    }
+
+    
+    
+    if (assistantStatus === AssistantStatus.IDLE || assistantStatus === AssistantStatus.LISTENING){
+      if (goingUp) {
+        ref.current.position.y += delta / 3;
+      } else {
+        ref.current.position.y -= delta / 3;
+      }
+      if ( Math.round(ref.current.position.y) === 2) {
+        setGoingUp(false)
+      }else if ( Math.round(ref.current.position.y) === 0) {
+        setGoingUp(true)
+      } 
+    }
+
+    if (assistantStatus === AssistantStatus.RESPONDING){
+      ref.current.rotation.y = 0
+      if (ref.current.scale.y > 0.7 ){
+        ref.current.scale.x -= delta/5
+        ref.current.scale.y -= delta/5
+        ref.current.scale.z -= delta/5
+      }
+    }
+    
+  });
 
   const handleClick = () => {
     click(!clicked);
+    window.speechSynthesis.cancel();
+    // voices.forEach((e,ind) => {if (e.lang === "en-US" ) {console.log(ind + ": " + e.name + "(" + e.lang  + ")")}})
+
     if (assistantStatus === AssistantStatus.IDLE) {
       setAssistantStatus(AssistantStatus.LISTENING);
     } else if (assistantStatus === AssistantStatus.LISTENING) {
@@ -49,45 +132,22 @@ export default function Assistant(
     }
   };
 
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame(
-    (state, delta) =>
-      (ref.current.rotation.x +=
-        assistantStatus === AssistantStatus.LISTENING ? delta * 2 : delta)
-  );
-
-  tts.addEventListener('end', (event) => {
-    setAssistantStatus(AssistantStatus.IDLE)
-  });
-
-  const speekMessage = (txt: string) => {
-    tts.text = txt;
-    console.log("Speaking: " + txt)
-    window.speechSynthesis.speak(tts);  
-  }
-
-  useEffect(() => {
-    if (assistantStatus === AssistantStatus.PREPARINGTOSPEEK) {
-      
-      // query for google text-to-speech
-      if (prompts.at(-1)) {
-        setAssistantStatus(AssistantStatus.RESPONDING)
-        speekMessage(prompts.at(-1)!.content)
-      }
-    }
-  });
 
   return (
     <mesh
       {...props}
       ref={ref}
-      scale={clicked ? 0.8 : 0.75}
+      scale={hovered ? 0.75 : clicked ? 0.75 : 0.7}
       onClick={(event) => handleClick()}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}
     >
-      <sphereGeometry args={[1, 24]} />
-      <meshStandardMaterial color={getAssistantColor(assistantStatus)} />
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial
+        color={getAssistantColor(assistantStatus)}
+        opacity={0.19}
+        map={colorMap}
+      />
     </mesh>
   );
 }

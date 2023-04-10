@@ -5,7 +5,6 @@ import { useState } from "react";
 import TextInput from "./components/TextInput";
 import { inputCanvasProps } from "@coconut-xr/input";
 import { ChatCompletionRequestMessage } from "openai";
-import { AssistantStatus } from "./states/AssistantState";
 
 function App() {
   // React Audio Recorder
@@ -27,14 +26,6 @@ function App() {
   // const [convertedText, setConvertedText] = useState<string>("");
   // whisper Input data
   // const [formData, setFormData] = useState<FormData | null>(null);
-
-  const [prompts, setPrompts] = useState<ChatCompletionRequestMessage[]>([
-    {
-      role: "system",
-      content:
-        "You are a personal finance assistant called Paul. You are programmed for virtual and augmented reality environments. Answer in sophisticated business English and add financial facts to your answers from time to time.",
-    },
-  ]);
 
   // Create display:none audio to autoplay the recorded result
   /*
@@ -124,7 +115,7 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
           clicked={isRecorderListening}
         /> */}
         <TextInput />
-        <Assitant position={[1.2, 0, 0]} />
+        <Assitant position={[0, 1, 0]} />
         <OrbitControls enableRotate={false} />
       </Canvas>
       {/* <AudioRecorder /> */}

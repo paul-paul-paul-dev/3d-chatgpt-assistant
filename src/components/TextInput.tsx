@@ -15,7 +15,7 @@ delete configuration.baseOptions.headers["User-Agent"];
 const openai = new OpenAIApi(configuration);
 
 function TextInput() {
-  const [inputText, setinputText] = useState("Hi, who are you?");
+  const [inputText, setinputText] = useState("Give me 3 essential investing tips for beginners!");
   const [isPressed, setPressed] = useState(false);
 
   const [prompts, setAssistantStatus, addToPrompts] =
@@ -76,10 +76,10 @@ function TextInput() {
     <RootContainer
       loadYoga={loadYoga}
       backgroundColor="white"
-      width={2}
+      width={4}
       height={1}
-      flexDirection="row"
-      translateX={-4.5}
+      flexDirection="column"
+      translateX={-7.5}
       borderRadius={0.1}
       padding={0.1}
     >
@@ -87,10 +87,9 @@ function TextInput() {
         flexGrow={3}
         value={inputText}
         onChange={handleChange}
-        maxWidth={1.2}
         overflow="hidden"
       />
-      <Container translateX={0.16} translateY={-0.07} height={0.1}>
+      <Container translateY={-0.03} height={0.1}>
         <Card
           radius={1}
           ratio={1}

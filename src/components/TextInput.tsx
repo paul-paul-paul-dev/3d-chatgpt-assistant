@@ -7,7 +7,7 @@ import { Configuration, OpenAIApi } from "openai";
 import { AssistantStatus, useAssistantStore } from "../states/AssistantState";
 
 const configuration = new Configuration({
-  apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY_WHISPER,
+  apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY,
 });
 
 delete configuration.baseOptions.headers["User-Agent"];

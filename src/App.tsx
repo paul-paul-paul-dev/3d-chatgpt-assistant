@@ -2,10 +2,11 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Recorder from "./components/Recorder";
 import Assitant from "./components/Assistant";
-import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+import { AudioRecorder } from "react-audio-voice-recorder";
 import { useEffect, useState } from "react";
 import { Configuration, OpenAIApi } from "openai";
-import fs from 'fs';
+import TextInput from "./components/TextInput";
+import { inputCanvasProps } from "@coconut-xr/input";
 
 class CustomFormData extends FormData {
   getHeaders() {
@@ -20,19 +21,10 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const blobToFile = (theBlob: Blob, fileName:string): File => {
-  var b: any = theBlob;
-  //A Blob() is almost a File() - it's just missing the two properties below which we will add
-  b.lastModifiedDate = new Date();
-  b.name = fileName;
-
-  //Cast to a File() type
-  return theBlob as File;
-    }
-
 
 function App() {
-  // React Audio Recorder
+// React Audio Recorder
+/*
   const {
     startRecording,
     stopRecording,
@@ -42,9 +34,10 @@ function App() {
     // isPaused,
     // recordingTime,
   } = useAudioRecorder();
+*/
 
   // indicator if currently recording audio
-  const [isRecorderListening, setIsRecorderListening] = useState(false);
+  /* const [isRecorderListening, setIsRecorderListening] = useState(false); */
   // Whisper Return Text
   // const [convertedText, setConvertedText] = useState<string>("");
   // Whisper loading
@@ -54,6 +47,8 @@ function App() {
 
 
 
+// Create display:none audio to autoplay the recorded result
+/*
   const createAudio = (blob: Blob | undefined):  void => {
     if (blob) {
       console.log("Blob_Present");
@@ -69,29 +64,45 @@ function App() {
       console.log("No_Blob_Present");
     }
   };
+*/
 
+// create Whisper Transcription with blob
+// This is not working because the API doesn't suppurt blob files to be passed to it
+/*
+GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com/openai/openai-node/pull/78
+*/
+/*
+  const filePath = './audio.m4a';
+  // ok
+  const readStream = fs.createReadStream(filePath);
+  // status 400
+  const buffer = fs.readFileSync(filePath);
+  // status 400
+  const base64 = buffer.toString('base64');
+  // TypeError: source.on is not a function (FormData does not implement Blob, https://github.com/form-data/form-data/issues/529 )
+  const blob = new Blob([toArrayBuffer(buffer)]);
+
+  await openai.createTranscription(
+    readStream, // buffer, base64 with mime-type, or blob
+    'whisper-1',
+  );
+*/
+/* 
   const handleAudio = async (blob: Blob | undefined) => {
     if (blob) {
       setLoading(true);
 
-      const file =  blobToFile(blob, "transcirpttext") // new File([blob], "transcirpttext", {type:"audio/webm", lastModified:new Date().getTime()});
-      console.log(file)
-
-      try {
-        fs.writeFileSync('../public/file.mp3', blob);
-        // file written successfully
-      } catch (err) {
-        console.error(err);
-      }
-      const transcription = openai.createTranscription(fs.createReadStream('../public/file.mp3') as any, "whisper-1")
-
-
+      const f = blobToFile(blob, "name")
+      const transcription = openai.createTranscription(f, "whisper-1")
       setLoading(false);
       // setConvertedText((await transcription).data);
       return transcription;
     }
   };
+*/
 
+// ==== UseEffect for Recording Audio ====
+/*
   useEffect(() => {
     if (isRecording && !isRecorderListening) {
       stopRecording();
@@ -110,22 +121,24 @@ function App() {
     .then((data) => console.log(data))
     .catch(console.log)
   }, [recordingBlob]);
+*/ 
 
   return (
     <>
-      <Canvas>
+      <Canvas {...inputCanvasProps}>
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        <Recorder
-          position={[-1.2, 0, 0]}
+        {/* <Recorder
+          
           click={setIsRecorderListening}
           clicked={isRecorderListening}
-        />
+        /> */}
+        <TextInput />
         <Assitant position={[1.2, 0, 0]} isLoading={loading} />
-        <OrbitControls />
+        <OrbitControls enableRotate={false}/>
       </Canvas>
-      <AudioRecorder />
+      {/* <AudioRecorder /> */}
     </>
   );
 }

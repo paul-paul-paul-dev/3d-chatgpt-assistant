@@ -13,6 +13,17 @@ Hence the text input and the send button.
 You need an OpenAI account, an OpenAI API key and a way to pay for the requests.  
 [OpenAI Platform](https://platform.openai.com/)
 
+ChatGPT is given a small context that can be change in the ```AssistantState.ts``` file.
+
+```js
+ "You are a personal finance assistant called Paul." +
+        "You are programmed for virtual and augmented reality environments. " +
+        "Keep your answers short but informative. ",
+      // "Be a little bit funny while explaining, talking or responding. ",    
+```
+
+Play around with these settings, it's absolutely hilarious how it responds when you give it the right context!
+
 ## Getting Started
 
 Create a .env file in the same folder as package.json with the content

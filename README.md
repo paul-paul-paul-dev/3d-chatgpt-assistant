@@ -17,9 +17,9 @@ ChatGPT is given a small context that can be change in the ```AssistantState.ts`
 
 ```js
  "You are a personal finance assistant called Paul." +
-        "You are programmed for virtual and augmented reality environments. " +
-        "Keep your answers short but informative. ",
-      // "Be a little bit funny while explaining, talking or responding. ",    
+"You are programmed for virtual and augmented reality environments. " +
+"Keep your answers short but informative. ",
+// "Be a little bit funny while explaining, talking or responding. ",    
 ```
 
 Play around with these settings, it's absolutely hilarious how it responds when you give it the right context!

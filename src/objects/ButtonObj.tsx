@@ -1,6 +1,6 @@
 import { ExtrudeGeometry, Mesh, MeshPhongMaterial, Shape } from "three";
 
-class CardGeometry extends ExtrudeGeometry {
+class ButtonGeometry extends ExtrudeGeometry {
   constructor(width: number, height: number, radius: number) {
     const roundedRectShape = new Shape();
     roundedRectShape.moveTo(0, radius);
@@ -16,12 +16,12 @@ class CardGeometry extends ExtrudeGeometry {
   }
 }
 
-class CardMesh extends Mesh {
+class ButtonMesh extends Mesh {
   constructor(radius: number, ratio: number) {
-    const geometry = new CardGeometry(100 * ratio, 100, radius);
+    const geometry = new ButtonGeometry(100 * ratio, 100, radius);
     const material = new MeshPhongMaterial({
       toneMapped: false,
-      transparent: true
+      transparent: true,
     });
     super(geometry, material);
     this.castShadow = true;
@@ -29,4 +29,4 @@ class CardMesh extends Mesh {
   }
 }
 
-export default CardMesh;
+export default ButtonMesh;

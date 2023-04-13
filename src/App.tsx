@@ -5,21 +5,22 @@ import TextInput from "./components/TextInput";
 import { inputCanvasProps } from "@coconut-xr/input";
 
 function App() {
+  // All of this will be used, if openai decides to support more file formats with their api for Whisper
   // React Audio Recorder
   /*
   const {
     startRecording,
     stopRecording,
-    // togglePauseResume,
+    togglePauseResume,
     recordingBlob,
     isRecording,
-    // isPaused,
-    // recordingTime,
+    isPaused,
+    recordingTime,
   } = useAudioRecorder();
 */
 
   // indicator if currently recording audio
-  /* const [isRecorderListening, setIsRecorderListening] = useState(false); */
+  // const [isRecorderListening, setIsRecorderListening] = useState(false);
   // Whisper Return Text
   // const [convertedText, setConvertedText] = useState<string>("");
   // whisper Input data
@@ -45,7 +46,7 @@ function App() {
 */
 
   // create Whisper Transcription with blob
-  // This is not working because the API doesn't suppurt blob files to be passed to it
+  // This is not working because the API doesn't support blob files to be passed to it
   /*
 GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com/openai/openai-node/pull/78
 */
@@ -69,9 +70,7 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
   const handleAudio = async (blob: Blob | undefined) => {
     if (blob) {
       setLoading(true);
-
-      const f = blobToFile(blob, "name")
-      const transcription = openai.createTranscription(f, "whisper-1")
+      const transcription = openai.createTranscription(blob, "whisper-1")
       setLoading(false);
       // setConvertedText((await transcription).data);
       return transcription;
@@ -107,11 +106,6 @@ GH Issue: https://github.com/openai/openai-node/issues/77 /// https://github.com
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
-        {/* <Recorder
-          
-          click={setIsRecorderListening}
-          clicked={isRecorderListening}
-        /> */}
         <TextInput />
         <Assitant position={[0, 1, 0]} />
         <OrbitControls enableRotate={false} />

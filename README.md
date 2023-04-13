@@ -7,6 +7,7 @@ REACT_APP_PUBLIC_OPENAI_API_KEY=YOUR-OPENAI-API-KEY
 ```
 
 Then
+
 ```
 npm install && npm run start
 ```

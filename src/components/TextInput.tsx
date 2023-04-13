@@ -2,7 +2,7 @@ import { Container, RootContainer, Text } from "@coconut-xr/koestlich";
 import { loadYoga } from "@coconut-xr/flex";
 import { useState } from "react";
 import { Input } from "@coconut-xr/input";
-import Card from "./Card";
+import Button from "./Button";
 import { Configuration, OpenAIApi } from "openai";
 import { AssistantStatus, useAssistantStore } from "../states/AssistantState";
 
@@ -15,20 +15,22 @@ delete configuration.baseOptions.headers["User-Agent"];
 const openai = new OpenAIApi(configuration);
 
 function TextInput() {
-  const [inputText, setinputText] = useState("Summarize the plot of the Film \"The Big Short\"");
+  const [inputText, setinputText] = useState(
+    "How was the performance of my portfolio in the last week?",
+  );
   const [isPressed, setPressed] = useState(false);
 
-  const [prompts, setAssistantStatus, addToPrompts] =
-    useAssistantStore((assistantStore) => [
-      assistantStore.prompts,
-      assistantStore.changeStatus,
-      assistantStore.addToPrompts,
-    ]);
+  const [prompts, setAssistantStatus, addToPrompts] = useAssistantStore((assistantStore) => [
+    assistantStore.prompts,
+    assistantStore.changeStatus,
+    assistantStore.addToPrompts,
+  ]);
 
   const handleChange = (e: string) => {
     setinputText(e);
   };
 
+  // Send ChatCompletion Request with the context and the previous converstation to OpenAi
   const sendRequest = async () => {
     console.log("Send Request:");
     console.log(prompts);
@@ -41,7 +43,7 @@ function TextInput() {
         },
         {
           timeout: 30000,
-        }
+        },
       );
 
       if (completion.data.choices[0].message) {
@@ -49,27 +51,29 @@ function TextInput() {
       }
     } catch (error: any) {
       if (error.response) {
-        console.log(error.response.status)
-        console.log(error.response.data)
+        console.log(error.response.status);
+        console.log(error.response.data);
       } else {
-        console.log(error.message)
+        console.log(error.message);
       }
     }
   };
 
+  // Send-Button-Down - Not Ideal to do it like this, i know :D
   const handleDown = (e: any) => {
     setPressed(true);
-    setAssistantStatus(AssistantStatus.PROCESSING)
-    addToPrompts({ role: "user", content: inputText })
+    setAssistantStatus(AssistantStatus.PROCESSING);
+    addToPrompts({ role: "user", content: inputText });
   };
 
+  // SendButton Up - Not Ideal to do it like this, i know :D
   const handleUp = (e: any) => {
     setPressed(false);
     sendRequest()
-    .then((response) => {
-      addToPrompts(response!)
-    })
-    .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEEK));
+      .then((response) => {
+        addToPrompts(response!);
+      })
+      .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEEK));
   };
 
   return (
@@ -83,14 +87,9 @@ function TextInput() {
       borderRadius={0.1}
       padding={0.1}
     >
-      <Input
-        flexGrow={3}
-        value={inputText}
-        onChange={handleChange}
-        overflow="hidden"
-      />
+      <Input flexGrow={3} value={inputText} onChange={handleChange} overflow="hidden" />
       <Container translateY={-0.03} height={0.1}>
-        <Card
+        <Button
           radius={1}
           ratio={1}
           height={0.1}
@@ -106,7 +105,7 @@ function TextInput() {
           <Text fontSize={0.1} color={"black"}>
             Send
           </Text>
-        </Card>
+        </Button>
       </Container>
     </RootContainer>
   );

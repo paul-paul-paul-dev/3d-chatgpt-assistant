@@ -5,7 +5,7 @@ class RectMesh extends Mesh {
     const geometry = new BoxGeometry();
     const material = new MeshPhongMaterial({
       toneMapped: false,
-      transparent: true
+      transparent: true,
     });
     super(geometry, material);
     this.castShadow = true;

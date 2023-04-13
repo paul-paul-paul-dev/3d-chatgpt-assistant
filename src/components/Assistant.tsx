@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Mesh, TextureLoader } from "three";
-import {
-  AssistantStatus,
-  getAssistantColor,
-  useAssistantStore,
-} from "../states/AssistantState";
+import { AssistantStatus, getAssistantColor, useAssistantStore } from "../states/AssistantState";
 
 type MyAssistantProps = {};
-export default function Assistant(
-  props: JSX.IntrinsicElements["mesh"] & MyAssistantProps
-) {
-  // This reference gives us direct access to the THREE.Mesh object
+export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssistantProps) {
   const ref = useRef<Mesh>(null!);
-  // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
@@ -22,25 +14,22 @@ export default function Assistant(
   var voices = window.speechSynthesis.getVoices();
   tts.voice = voices[146];
   /* Good Voices : 
-  14: Daniel en-US
+  14: Daniel en-US - Use this if you want the assistant to react to what he is saying. Google SpeechSynth can't do that...
   140: Zarvox en-US pitch 1.4 rate 0.9
   144: Google US en-US rate 0.95
   145: Google UK English Female en-GB rate 1.1 pitch 0.9
   146: Google UK English Male en-GB rate 1.1 pitch 0.9
-
   */
   tts.volume = 1;
   tts.rate = 1.1;
   tts.pitch = 0.9;
   tts.lang = "en-GB";
 
-  const [prompts, assistantStatus, setAssistantStatus] = useAssistantStore(
-    (assistantStore) => [
-      assistantStore.prompts,
-      assistantStore.status,
-      assistantStore.changeStatus,
-    ]
-  );
+  const [prompts, assistantStatus, setAssistantStatus] = useAssistantStore((assistantStore) => [
+    assistantStore.prompts,
+    assistantStore.status,
+    assistantStore.changeStatus,
+  ]);
 
   tts.onend = (event) => {
     setAssistantStatus(AssistantStatus.IDLE);
@@ -65,6 +54,7 @@ export default function Assistant(
     window.speechSynthesis.speak(tts);
   };
 
+  // make it react to what it's saying by growing a bit larger
   tts.onboundary = (event) => {
     ref.current.scale.x = 0.8;
     ref.current.scale.y = 0.8;
@@ -73,7 +63,7 @@ export default function Assistant(
 
   useEffect(() => {
     if (assistantStatus === AssistantStatus.PREPARINGTOSPEEK) {
-      // query for google text-to-speech
+      // query for google text-to-speech or use SpeechSynthesis here
       if (prompts.at(-1)) {
         setAssistantStatus(AssistantStatus.RESPONDING);
         speekMessage(prompts.at(-1)!.content);
@@ -81,9 +71,8 @@ export default function Assistant(
     }
   });
 
-  // MODEL STUFF 3D and Animation
+  // 3D model stuff and Animation
   const colorMap = useLoader(TextureLoader, "eyes.png");
-
   const [goingUp, setGoingUp] = useState(true);
 
   useFrame((state, delta) => {
@@ -117,7 +106,7 @@ export default function Assistant(
     if (assistantStatus === AssistantStatus.RESPONDING) {
       // no rotation while talking
       ref.current.rotation.y = 0;
-      // visual response while talking
+      // visual response while talking -> see also "tts.onboundary" eventlistner
       if (ref.current.scale.y > 0.7) {
         ref.current.scale.x -= delta / 5;
         ref.current.scale.y -= delta / 5;
@@ -126,6 +115,7 @@ export default function Assistant(
     }
   });
 
+  // Used only for voice recording which ist currently not supported/implemented in this application and in the OpenAI API
   const handleClick = () => {
     click(!clicked);
     window.speechSynthesis.cancel();

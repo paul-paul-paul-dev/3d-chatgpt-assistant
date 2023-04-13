@@ -1,19 +1,18 @@
 import { Container, Object } from "@coconut-xr/koestlich";
 import useHover from "../hooks/useHover";
-import CardMesh from "../objects/Card";
+import ButtonMesh from "../objects/ButtonObj";
 import { ComponentPropsWithoutRef, useMemo } from "react";
 
-interface CardProps extends ComponentPropsWithoutRef<typeof Container> {
+interface ButtonProps extends ComponentPropsWithoutRef<typeof Container> {
   hoverAnimation?: boolean;
   ratio: number;
   radius: number;
   isPressed: boolean;
 }
 
-function Card({ hoverAnimation = true, radius, ratio, isPressed, ...props }: CardProps) {
+function Button({ hoverAnimation = true, radius, ratio, isPressed, ...props }: ButtonProps) {
   const { isHovered, hoverProps } = useHover();
-
-  const mesh = useMemo(() => new CardMesh(radius, ratio), [ratio, radius]);
+  const mesh = useMemo(() => new ButtonMesh(radius, ratio), [ratio, radius]);
 
   return (
     <Object
@@ -28,4 +27,4 @@ function Card({ hoverAnimation = true, radius, ratio, isPressed, ...props }: Car
   );
 }
 
-export default Card;
+export default Button;

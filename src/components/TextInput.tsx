@@ -16,7 +16,7 @@ const openai = new OpenAIApi(configuration);
 
 function TextInput() {
   const [inputText, setinputText] = useState(
-    "How was the performance of my portfolio in the last week?",
+    "Would it have been a good idea to invest in Apple shares 10 years ago? ",
   );
   const [isPressed, setPressed] = useState(false);
 

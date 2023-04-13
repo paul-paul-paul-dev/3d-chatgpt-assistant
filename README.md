@@ -16,7 +16,7 @@ You need an OpenAI account, an OpenAI API key and a way to pay for the requests.
 ChatGPT is given a small context that can be change in the ```AssistantState.ts``` file.
 
 ```js
- "You are a personal finance assistant called Paul." +
+"You are a personal finance assistant called Paul." +
 "You are programmed for virtual and augmented reality environments. " +
 "Keep your answers short but informative. ",
 // "Be a little bit funny while explaining, talking or responding. ",    
@@ -28,13 +28,13 @@ Play around with these settings, it's absolutely hilarious how it responds when 
 
 Create a .env file in the same folder as package.json with the content
 
-```
+```.env
 REACT_APP_PUBLIC_OPENAI_API_KEY=YOUR-OPENAI-API-KEY
 ```
 
 Then
 
-```
+```zsh
 npm install && npm run start
 ```
 

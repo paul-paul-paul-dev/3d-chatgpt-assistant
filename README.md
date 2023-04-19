@@ -51,6 +51,7 @@ and you are good to go!
 - [ ] Use a more complex 3D model like a gltf model made in blender with animations etc.
 - [ ] Update the context/system message of ChatGPT to support complex requestes
 - [ ] Add subtitles to the assistant
+- [ ] **Important! Fix useWhisper without copying the dist folder to node_modules😅**
 
 ### **Nice-To-Have**
 

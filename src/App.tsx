@@ -5,7 +5,6 @@ import TextInput from "./components/TextInput";
 import { inputCanvasProps } from "@coconut-xr/input";
 
 function App() {
-
   return (
     <>
       <Canvas {...inputCanvasProps}>

@@ -9,17 +9,17 @@ The old TextInput has been removed. To start a conversation (aka start recording
 
 Then the whole OpenAI-Whisper transcription and ChatGPT request starts. This may take a few seconds, depending on the input and output of the request. The assistant turns orange and rotates as it processes the request. Just let it be :D
 
-***Info***  
+**_Info_**  
 You need an OpenAI account, an OpenAI API key and a way to pay for the requests.  
 [OpenAI Platform](https://platform.openai.com/)
 
-ChatGPT is given a small context that can be change in the ```AssistantState.ts``` file.
+ChatGPT is given a small context that can be change in the `AssistantState.ts` file.
 
 ```js
 "You are a personal finance assistant called Paul." +
 "You are programmed for virtual and augmented reality environments. " +
 "Keep your answers short but informative. ",
-// "Be a little bit funny while explaining, talking or responding. ",    
+// "Be a little bit funny while explaining, talking or responding. ",
 ```
 
 Play around with these settings, it's absolutely hilarious how it responds when you give it the right context!
@@ -52,7 +52,7 @@ and you are good to go!
 - [ ] Update the context/system message of ChatGPT to support complex requestes
 - [ ] Add subtitles to the assistant
 
-### **Nice-To-Have**  
+### **Nice-To-Have**
 
 - [ ] Use Google-TTS-Cloud-API to make the voice way more realistic than SpeechSynthesis (costs!!)
 - [ ] Experiment with other contexts
@@ -64,14 +64,14 @@ This is just for later later. The assistant should be integrated into a financia
 - [ ] Mulituser
 - [ ] Financal tools like Panels and buy/sell buttons, realtime portfolio data, etc.
 
-## *ChatGPT context in the future and what I want to do with it...*
+## _ChatGPT context in the future and what I want to do with it..._
 
 So the idea is that somewhere in the context ChatGPT knows about a users Stock-Portfolio, realtime stock data and current financial news.
 I don't know how this is going to be possible. Maybe in the near future OpenAI will catch up to Google Bard or the Microsoft Bing AI to access realtime data. Maybe...
 
 Also the response should support things like when i make the request "Show me the performance of apple in the last 30 Days" somewhere in the response there should be a line that says "/view AAPL 30 d" or somethings similar. That way the application around the assistant can "react" to th specific responsens and show the stock in 3D next to you with the data the user requested.
 
-## *Links*
+## _Links_
 
 [BloombergGPT](https://www.bloomberg.com/company/press/bloomberggpt-50-billion-parameter-llm-tuned-finance/)  
 [Bard by Google](https://bard.google.com/?hl=en)

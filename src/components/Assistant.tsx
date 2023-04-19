@@ -3,13 +3,11 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { Mesh, TextureLoader } from "three";
 import { AssistantStatus, getAssistantColor, useAssistantStore } from "../states/AssistantState";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import { useWhisper } from '@chengsokdara/use-whisper'
-
+import { useWhisper } from "@chengsokdara/use-whisper";
 
 const configuration = new Configuration({
   apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY,
 });
-
 
 delete configuration.baseOptions.headers["User-Agent"];
 
@@ -73,15 +71,14 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
     apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN
     whisperConfig: {
       temperature: 0.1,
-      language: 'en',
+      language: "en",
     },
     // streaming: true,
     // timeSlice: 1_000, // 1 second
     // removeSilence: true,
     // nonStop: true, // keep recording as long as the user is speaking
     // stopTimeout: 3000, // auto stop after 5 seconds
-  })
-
+  });
 
   // TTS Setup
   const tts = new SpeechSynthesisUtterance();
@@ -99,12 +96,14 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
   tts.pitch = 0.9;
   tts.lang = "en-GB";
 
-  const [prompts, assistantStatus, setAssistantStatus, addToPrompts] = useAssistantStore((assistantStore) => [
-    assistantStore.prompts,
-    assistantStore.status,
-    assistantStore.changeStatus,
-    assistantStore.addToPrompts,
-  ])
+  const [prompts, assistantStatus, setAssistantStatus, addToPrompts] = useAssistantStore(
+    (assistantStore) => [
+      assistantStore.prompts,
+      assistantStore.status,
+      assistantStore.changeStatus,
+      assistantStore.addToPrompts,
+    ],
+  );
 
   tts.onend = (event) => {
     setAssistantStatus(AssistantStatus.IDLE);
@@ -192,7 +191,7 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
     }
   });
 
-/*
+  /*
 
   const getData = () => {
     // fetch("https://avalon-js-2.ts.r.appspot.com/dealCards")
@@ -246,23 +245,22 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
 
     if (assistantStatus === AssistantStatus.IDLE) {
       // speakMessage("")
-      startRecording()
+      startRecording();
     } else if (assistantStatus === AssistantStatus.LISTENING) {
-      stopRecording()
+      stopRecording();
     }
   };
-  
-  useEffect(()=> {
-    console.log(transcript.text)
+
+  useEffect(() => {
+    console.log(transcript.text);
     window.speechSynthesis.cancel();
-  
-    if (transcript.text){
-      addToPrompts({ role: "user", content: transcript.text })
+
+    if (transcript.text) {
+      addToPrompts({ role: "user", content: transcript.text });
     } else {
-      console.log("ERROR: Transcript was undefined")
+      console.log("ERROR: Transcript was undefined");
     }
-  
-  }, [transcript, addToPrompts])
+  }, [transcript, addToPrompts]);
 
   useEffect(() => {
     const sendRequest = async () => {
@@ -279,7 +277,7 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
             timeout: 30000,
           },
         );
-  
+
         // Debugging
         /*
         const myPromise = new Promise<ChatCompletionRequestMessage>((resolve, reject) => {
@@ -304,32 +302,37 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
       }
     };
 
-    if(prompts.length % 2 === 0){
-      setAssistantStatus(AssistantStatus.PROCESSING)
+    if (prompts.length % 2 === 0) {
+      setAssistantStatus(AssistantStatus.PROCESSING);
       sendRequest()
-      .then((response) => {
-        addToPrompts(response!);
-      })
-      .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEAK));
+        .then((response) => {
+          addToPrompts(response!);
+        })
+        .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEAK));
     }
-
-  }, [addToPrompts, setAssistantStatus, prompts])
-
-  useEffect(()=> {
-    console.log("Transcribing: " + transcribing) // the process of sending the file to openAI and recieving it back
-  },[transcribing])
-
-  useEffect(()=> {
-    console.log("Recording: " + recording) // the while time the Assistant is recording
-  },[recording])
-
-  useEffect(()=> {
-    console.log("Speaking: " + speaking) // when the User is speaking
-  },[speaking])
+  }, [addToPrompts, setAssistantStatus, prompts]);
 
   useEffect(() => {
-    setAssistantStatus(recording ? AssistantStatus.LISTENING : transcribing ? AssistantStatus.PROCESSING : AssistantStatus.IDLE)
-  },[recording,transcribing, setAssistantStatus])
+    console.log("Transcribing: " + transcribing); // the process of sending the file to openAI and recieving it back
+  }, [transcribing]);
+
+  useEffect(() => {
+    console.log("Recording: " + recording); // the while time the Assistant is recording
+  }, [recording]);
+
+  useEffect(() => {
+    console.log("Speaking: " + speaking); // when the User is speaking
+  }, [speaking]);
+
+  useEffect(() => {
+    setAssistantStatus(
+      recording
+        ? AssistantStatus.LISTENING
+        : transcribing
+        ? AssistantStatus.PROCESSING
+        : AssistantStatus.IDLE,
+    );
+  }, [recording, transcribing, setAssistantStatus]);
 
   return (
     <mesh

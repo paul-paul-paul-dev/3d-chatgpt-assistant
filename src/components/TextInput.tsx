@@ -73,7 +73,7 @@ function TextInput() {
       .then((response) => {
         addToPrompts(response!);
       })
-      .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEEK));
+      .then(() => setAssistantStatus(AssistantStatus.PREPARINGTOSPEAK));
   };
 
   return (

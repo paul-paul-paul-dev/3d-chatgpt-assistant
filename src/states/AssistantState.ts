@@ -5,7 +5,7 @@ export enum AssistantStatus {
   IDLE,
   LISTENING,
   PROCESSING,
-  PREPARINGTOSPEEK,
+  PREPARINGTOSPEAK,
   RESPONDING,
 }
 

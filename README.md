@@ -52,6 +52,7 @@ and you are good to go!
 - [ ] Update the context/system message of ChatGPT to support complex requestes
 - [ ] Add subtitles to the assistant
 - [ ] **Important! Fix useWhisper without copying the dist folder to node_modules😅**
+- [ ] Put the context into a seperate file
 
 ### **Nice-To-Have**
 

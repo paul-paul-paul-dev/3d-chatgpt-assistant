@@ -1,5 +1,6 @@
 import { ChatCompletionRequestMessage } from "openai";
 import { create } from "zustand";
+import { assistantContext } from "./AssistantContext";
 
 export enum AssistantStatus {
   IDLE,
@@ -32,14 +33,7 @@ interface AssistantState {
 
 export const useAssistantStore = create<AssistantState>((set) => ({
   prompts: [
-    {
-      role: "system",
-      content:
-        "You are a personal finance assistant called Paul." +
-        "You are programmed for virtual and augmented reality environments. " +
-        "Keep your answers short but informative. ",
-      // "Be a little bit funny while explaining, talking or responding. ",
-    },
+    assistantContext
   ],
   status: AssistantStatus.IDLE,
   addToPrompts: (newPrompt) =>

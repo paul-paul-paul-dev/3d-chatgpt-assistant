@@ -47,17 +47,18 @@ and you are good to go!
 - [x] Use SpeechSynthesis Web API for Text-To-Speech
 - [x] Find good SpeechSynthesisiUtterance voices that sound nice.
 - [x] Implement Whisper Speech-To-Text (Text Input has been removed)
+- [x] Put the context into a seperate file
 - [ ] Use WebAudioAnalyzer to let the assistant react to what it's saying
 - [ ] Use a more complex 3D model like a gltf model made in blender with animations etc.
 - [ ] Update the context/system message of ChatGPT to support complex requestes
 - [ ] Add subtitles to the assistant
 - [ ] **Important! Fix useWhisper without copying the dist folder to node_modules😅 And make a small tutorial on how to fix it temporarily**
-- [ ] Put the context into a seperate file
 
 ### **Nice-To-Have**
 
 - [ ] Use Google-TTS-Cloud-API to make the voice way more realistic than SpeechSynthesis (costs!!)
 - [ ] Experiment with other contexts
+- [ ] Use realtime data
 
 #### **Application**
 

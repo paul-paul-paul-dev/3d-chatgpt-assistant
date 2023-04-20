@@ -1,6 +1,6 @@
 import { ChatCompletionRequestMessage } from "openai";
 import { create } from "zustand";
-import { assistantContext } from "./AssistantContext";
+import { assistantContext } from "../contexts/AssistantContext";
 
 export enum AssistantStatus {
   IDLE,

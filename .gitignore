@@ -24,4 +24,5 @@ yarn-error.log*
 
 
 # closed source files
-# use git update-index --assume-unchanged .env
+# also .env file
+# use git update-index --assume-unchanged FILE

@@ -4,6 +4,9 @@ import { Mesh, TextureLoader } from "three";
 import { AssistantStatus, getAssistantColor, useAssistantStore } from "../states/AssistantState";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { useWhisper } from "@chengsokdara/use-whisper";
+import { parseBuyStockAmount, parseGetCurrentPrice, parseSellStockAmount } from "../parsing/parsing";
+import { getStockPrice } from "../api/finApi";
+import { CommerceButtonType, useAppStore } from "../states/AppState";
 
 const configuration = new Configuration({
   apiKey: process.env.REACT_APP_PUBLIC_OPENAI_API_KEY,
@@ -13,7 +16,9 @@ delete configuration.baseOptions.headers["User-Agent"];
 
 const openai = new OpenAIApi(configuration);
 
-type MyAssistantProps = {};
+type MyAssistantProps = {
+  voice?: number
+};
 
 export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssistantProps) {
   const ref = useRef<Mesh>(null!);
@@ -63,7 +68,6 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
     speaking,
     transcript,
     transcribing,
-    pauseRecording,
     startRecording,
     stopRecording,
   } = useWhisper({
@@ -83,7 +87,7 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
   // TTS Setup
   const tts = new SpeechSynthesisUtterance();
   var voices = window.speechSynthesis.getVoices();
-  tts.voice = voices[146];
+  tts.voice = voices[props.voice ?? 146];
   /* Good Voices : 
   14: Daniel en-US - Use this if you want the assistant to react to what he is saying. Google SpeechSynth can't do that...
   140: Zarvox en-US pitch 1.4 rate 0.9
@@ -104,6 +108,13 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
       assistantStore.addToPrompts,
     ],
   );
+
+  const [changeStock, changeCommerceButton] = useAppStore(
+    (appStore) => [
+      appStore.changeStock,
+      appStore.changeCommerceButton,
+    ]
+  )
 
   tts.onend = (event) => {
     setAssistantStatus(AssistantStatus.IDLE);
@@ -127,6 +138,7 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
     // '<emphasis level="strong">To be</emphasis> <break time="2000ms"/> or not to be, <break time="400ms"/> <emphasis level="moderate">that</emphasis> is the question.<break time="400ms"/> Whether tis nobler in the mind to suffer The slings and arrows of outrageous fortune,<break time=\"200ms\"/> Or to take arms against a sea of troubles And by opposing end them. </speak>'
     console.log("Speaking: ");
     console.log(txt);
+    tts.voice = voices[props.voice ?? 146];
     window.speechSynthesis.speak(tts);
   };
 
@@ -137,12 +149,35 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
     ref.current.scale.z = 0.8;
   };
 
+  const parseMessage = (message: string) => {
+
+    const stock = parseGetCurrentPrice(message);
+    const buyStockAmount = parseBuyStockAmount(message);
+    const sellStockAmount = parseSellStockAmount(message);
+
+    const dummyPrice = getStockPrice("DUMY")
+
+    if (stock) {
+      message = `The current price of ${stock.stockName} is ${dummyPrice} €`
+      changeStock({companyName: stock.stockName, tickerSymbol:"AAPL", currentPrice: dummyPrice})
+    } else if (buyStockAmount) {
+      message = `Buying ${buyStockAmount.amount} shares of ${buyStockAmount.stockName} at a price of ${dummyPrice}`
+      changeStock({companyName: buyStockAmount.stockName, tickerSymbol:"AAPL", currentPrice: dummyPrice})
+      changeCommerceButton(CommerceButtonType.BUY)
+    } else if (sellStockAmount) {
+      message = `Selling ${sellStockAmount.amount} shares of ${sellStockAmount.stockName} at a price of ${dummyPrice}`
+      changeStock({companyName: sellStockAmount.stockName, tickerSymbol:"AAPL", currentPrice: dummyPrice})
+      changeCommerceButton(CommerceButtonType.SELL)
+    } 
+    speakMessage(message)
+  }
+
   useEffect(() => {
     if (assistantStatus === AssistantStatus.PREPARINGTOSPEAK) {
       // query for google text-to-speech or use SpeechSynthesis here
       if (prompts.at(-1)) {
         setAssistantStatus(AssistantStatus.RESPONDING);
-        speakMessage(prompts.at(-1)!.content);
+        parseMessage(prompts.at(-1)!.content)        
       }
     }
   });

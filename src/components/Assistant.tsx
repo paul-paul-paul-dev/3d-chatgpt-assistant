@@ -160,6 +160,8 @@ export default function Assistant(props: JSX.IntrinsicElements["mesh"] & MyAssis
     if (stock) {
       message = `The current price of ${stock.stockName} is ${dummyPrice} €`
       changeStock({companyName: stock.stockName, tickerSymbol:"AAPL", currentPrice: dummyPrice})
+      changeCommerceButton(CommerceButtonType.NONE)
+
     } else if (buyStockAmount) {
       message = `Buying ${buyStockAmount.amount} shares of ${buyStockAmount.stockName} at a price of ${dummyPrice}`
       changeStock({companyName: buyStockAmount.stockName, tickerSymbol:"AAPL", currentPrice: dummyPrice})

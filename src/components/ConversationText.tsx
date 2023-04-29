@@ -42,10 +42,9 @@ export default function ConversationText() {
 
   return (
     <Container flexGrow={3} margin={0.2} backgroundColor="white">
-      <Card radius={10} ratio={2} flexGrow={1} padding={0.2} flexDirection="column">
-        <Container flexDirection="row"><Text fontSize={0.2}>{`User: ${convo.user}`}</Text></Container>
+      <Card radius={10} ratio={4} flexGrow={1} padding={0.2} flexDirection="column" justifyContent="space-between">
         <Container flexDirection="row"><Text fontSize={0.2}>{`Assistant: ${convo.assistant}`}</Text></Container>
-
+        <Container flexDirection="row"><Text fontSize={0.2}>{`User: ${convo.user}`}</Text></Container>
         </Card>
     </Container>
   );

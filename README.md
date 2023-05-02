@@ -60,6 +60,10 @@ and you are good to go!
 - [ ] Experiment with other contexts
 - [ ] Use realtime data
 
+### **The Future**
+
+You may have heard of ChatGPT plugins. This would make the things I am currently trying to implement with context/system messages (which honestly don't work well) obsolete. If I get access to develop such a plugin in the future, I will switch to this method as it is more promising than my current approach. Let's see what the future holds for this project!
+
 #### **Application**
 
 This is just for later later. The assistant should be integrated into a financial AR-application.

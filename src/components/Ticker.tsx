@@ -19,12 +19,10 @@ export default function Ticker(props: JSX.IntrinsicElements["mesh"]) {
       backgroundColor="white"
       borderRadius={0.2}
       flexDirection="row"
-      border={0.05}
-      borderColor={"black"}
     >
       <Container flexGrow={2} margin={0.2} backgroundColor="white">
         {stock ? (
-          <Card radius={10} ratio={2} flexDirection="column" flexGrow={1}>
+          <Card radius={10} ratio={2} flexDirection="column" flexGrow={1} color={"lightgray"}>
             <Text fontSize={0.3}>{`${stock.companyName} (${stock.tickerSymbol})`}</Text>
             <Container flexDirection="row" marginY={"auto"}>
               <Text fontSize={0.35}>{`${stock.currentPrice} Euro`}</Text>

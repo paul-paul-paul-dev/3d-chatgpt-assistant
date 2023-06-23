@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Mesh, TextureLoader } from "three";
 import { AssistantStatus, getAssistantColor, useAssistantStore } from "../states/AssistantState";
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import { Configuration, OpenAIApi } from "openai";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { parseBuyStockAmount, parseGetCurrentPrice, parseSellStockAmount } from "../parsing/parsing";
 import { getStockPrice } from "../api/finApi";
